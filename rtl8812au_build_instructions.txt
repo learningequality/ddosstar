@@ -1,19 +1,21 @@
 
-# build driver module within a docker image
+# build driver module
 
-docker run -i -t ubuntu /bin/bash
+# if you want to do this within a docker image:
+#docker run -i -t ubuntu /bin/bash
 
-apt update
-apt install wget build-essential linux-source linux-headers-$(uname -r) git nano bc
+sudo apt update
+sudo apt install wget build-essential linux-source linux-headers-$(uname -r) git nano bc
 
 git clone https://github.com/gordboy/rtl8812au.git
 cd rtl8812au
 
 make
 
+# if you're doing this within a docker image:
 # in a parallel shell, get the built module out of the docker image (replace "f0294b5f25e0" with the id of the image above)
+#docker cp f0294b5f25e0:/rtl8812au/8812au.ko .
 
-docker cp f0294b5f25e0:/rtl8812au/8812au.ko .
 sudo install -p -m 644 8812au.ko "/lib/modules/`uname -r`/kernel/drivers/net/wireless/"
 sudo /sbin/depmod -a `uname -r`
 sudo modprobe -v 8812au
